@@ -3,7 +3,9 @@ var container = document.getElementById('visualization');
 
 // Adatok létrehozása (DataSet)
 var items = new vis.DataSet([
-  // Két háttérperiódus
+  
+  // —————————————————————————————————————————————————————————— PERIÓDUSOK ——————————————————————————————————————————————————————————
+  
   {
     id: "A",
     content: "Premodern kor",
@@ -20,7 +22,8 @@ var items = new vis.DataSet([
     className: "negative",
   },
 
-  // Események ezekben az időszakokban
+  // —————————————————————————————————————————————————————————— PERIÓDUSOK ——————————————————————————————————————————————————————————
+
   {
     id: 1,
     content: "Szolón reformjai Athénban",
@@ -49,15 +52,18 @@ var items = new vis.DataSet([
   },
 ]);
 
-// Konfigurációs opciók
+// —————————————————————————————————————————————————————————— KONFIGURÁCIÓ ——————————————————————————————————————————————————————————
+
+// ————————————————————————————— Az idővonal kezdő és végpontja
+
 var options = {
-  // Az idővonal kezdő és végpontja
-  start: new Date(-620, 0, 1), // Kezdődjön i.e. 620-nál
-  end: new Date(-480, 0, 1),   // Érjen véget i.e. 480-nál
+  
+  start: new Date(-600, 0, 1), // Kezdőpont
+  end: new Date(2040, 0, 1),   // Végpont
   
   // További opciók
-  height: '300px',
-  editable: true, // Elemek szerkeszthetősége
+  height: '500px',
+  editable: false, // Elemek szerkeszthetősége
 };
 
 // Timeline létrehozása
