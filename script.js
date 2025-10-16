@@ -1,75 +1,41 @@
 // script.js
 
-// 1. A Google Sheets publikált CSV linkje
-const googleSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSmNXKlWO1jsEytxJBiAFE0x3sU3sS98MJEbcMpR6JxZH38aCEpfnQ3CvZivwHALAnCHoXNdquW-W77/pub?output=csv';
-
-// Az idővonal megjelenítésére szolgáló konténer
+// 1. Megkeressük a HTML elemet, ahova az idővonalat tesszük.
 const container = document.getElementById('timeline');
 
-// Az idővonal beállításai
+// 2. Létrehozzuk az "elemeket". Most ez a két háttérsáv lesz.
+// A Vis.js-ben a 'background' típusú elemek pont erre valók.
+const items = new vis.DataSet([
+    {
+        id: 'premodern',
+        content: 'Premodern kor', // Ez lesz a felirat
+        start: '-1000-01-01',     // Kezdődjön jó korán, hogy mindent lefedjen
+        end: '1600-01-01',        // Eddig tart
+        type: 'background',
+        className: 'premodern-bg' // Ezzel a CSS osztállyal fogjuk megszínezni
+    },
+    {
+        id: 'modern',
+        content: 'Modern kor',
+        start: '1600-01-01',      // Pontosan ott kezdődik, ahol a másik véget ért
+        end: '2100-01-01',        // Tartsan a jövőig, hogy mindig látszódjon
+        type: 'background',
+        className: 'modern-bg'
+    }
+]);
+
+// 3. Beállítások az idővonalhoz (opciók)
 const options = {
-    zoomable: true,
-    zoomMin: 1000 * 60 * 60 * 24 * 365 * 5, // Minimum 5 év
-    stack: true, // Elemek ne fedjék egymást
-    start: '-0500',
-    end: '2020',
+    // Kezdő nézet, ami jól mutatja a 1600-as elválasztást
+    start: '1400-01-01',
+    end: '1800-01-01',
+    
+    // Alapvető beállítások
+    height: '400px',
+    stack: false, // Fontos: a háttérelemek ne akarjanak egymás alá rendeződni
+    zoomMin: 1000 * 60 * 60 * 24 * 365 * 10 // Legalább 10 évre lehessen nagyítani
 };
 
-function formatYear(year) {
-  // A Vis.js tökéletesen kezeli az "ÉÉÉÉ-HH-NN" formátumot,
-  // negatív (Kr.e.) és pozitív (Kr.u.) évekre egyaránt.
-  // Az egyszerűség kedvéért minden év január 1-jét használjuk.
-  return `${year}-01-01`;
-}
-
-// 2. Adatok betöltése és feldolgozása a Google Sheets-ből
-Papa.parse(googleSheetURL, {
-    download: true,
-    header: true, // Fontos! Ez mondja meg, hogy az első sor a fejléc
-    dynamicTyping: true, // Automatikusan számmá alakítja a számokat
-    complete: function(results) {
-        // A 'results.data' tartalmazza a sorokat objektumokként
-        const adatok = results.data;
-        
-        // Üres tömbök a Vis.js számára
-        let items = [];
-        let groups = [];
-        let groupMap = new Map(); // Segítségével elkerüljük a duplikált korszakokat
-
-        // 3. Adatok átalakítása a Vis.js formátumára
-        adatok.forEach((sor, index) => {
-            if (sor.nev && sor.szuletett !== null && sor.meghalt !== null) {
-                // Filozófusok hozzáadása az 'items'-hez
-                items.push({
-                    id: index + 1,
-                    content: sor.nev,
-                    start: sor.szuletett.toString(), // Dátumként string kell
-                    end: sor.meghalt.toString(),
-                    group: sor.korszak_id,
-                    type: 'range'
-                });
-
-                // Korszakok (csoportok) gyűjtése, duplikáció nélkül
-                if (!groupMap.has(sor.korszak_id)) {
-                    groupMap.set(sor.korszak_id, sor.korszak_nev);
-                    groups.push({
-                        id: sor.korszak_id,
-                        content: sor.korszak_nev
-                    });
-                }
-            }
-        });
-
-        // 4. Az idővonal létrehozása a betöltött adatokkal
-        const timeline = new vis.Timeline(
-            container, 
-            new vis.DataSet(items), 
-            new vis.DataSet(groups), 
-            options
-        );
-    },
-    error: function(error) {
-        console.error("Hiba a CSV betöltése közben:", error);
-        container.innerHTML = "Hiba történt az adatok betöltése közben. Ellenőrizd a Google Sheets linket!";
-    }
-});
+// 4. Létrehozzuk az idővonalat a fenti adatokkal és beállításokkal.
+// Figyeld meg, hogy most nincs szükség "groups"-ra.
+const timeline = new vis.Timeline(container, items, options);
