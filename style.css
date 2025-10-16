@@ -1,0 +1,12 @@
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+}
+
+#timeline {
+    width: 90%;
+    height: 600px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    background-color: white;
+}
