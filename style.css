@@ -3,8 +3,12 @@ body, html {
   font-size: 11pt;
 }
 
-/* negativ stílus a háttérperiódushoz */
+/* A Modern kor pirosas háttere */
 .vis-item.vis-background.negative {
   background-color: rgba(255, 0, 0, 0.2);
-  border-color: rgba(255, 0, 0, 0.6);
+}
+
+/* Az Antikvitás kékes háttere */
+.vis-item.vis-background.antikvitas-stilus {
+  background-color: rgba(0, 100, 255, 0.2);
 }
