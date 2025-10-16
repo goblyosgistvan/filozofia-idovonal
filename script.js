@@ -22,13 +22,17 @@ var items = new vis.DataSet([
     className: "negative",
   },
 
-  // —————————————————————————————————————————————————————————— PERIÓDUSOK ——————————————————————————————————————————————————————————
+  // —————————————————————————————————————————————————————————— KORSZAKOK ——————————————————————————————————————————————————————————
 
   {
-    id: 1,
-    content: "Szolón reformjai Athénban",
-    start: new Date(-594, 0, 1),
+    id: "a",
+    content: "Antikvitás",
+    start: new Date(-600, 0, 1),
+    end: new Date(476, 0, 1),
+    type: "background",
+    className: "negative",
   },
+  
   {
     id: 2,
     content: "A delphoi jósda befolyásának csúcsa",
