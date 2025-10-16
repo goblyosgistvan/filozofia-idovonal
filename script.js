@@ -1,13 +1,25 @@
 // DOM element ahol a Timeline megjelenik
 var container = document.getElementById('visualization');
 
-// Adatok létrehozása (DataSet)
+// 1. LÉPÉS: CSOPORTOK DEFINIÁLÁSA
+// Létrehozunk két csoportot: egyet a nagy periódusoknak, egyet a korszakoknak.
+var groups = new vis.DataSet([
+  {
+    id: 'periodusok',
+    content: 'Periódusok' // Ez lesz a sáv neve
+  },
+  {
+    id: 'korszakok',
+    content: 'Korszakok' // Ez lesz a másik sáv neve
+  }
+]);
+
+// 2. LÉPÉS: ELEMEK HOZZÁRENDELÉSE A CSOPORTOKHOZ
 var items = new vis.DataSet([
-  
   // —————————————————————————————————————————————————————————— PERIÓDUSOK ——————————————————————————————————————————————————————————
-  
   {
     id: "A",
+    group: 'periodusok', // Hozzárendelés a 'periodusok' csoporthoz
     content: "Premodern kor",
     start: new Date(-600, 0, 1),
     end: new Date(1600, 0, 1),
@@ -15,6 +27,7 @@ var items = new vis.DataSet([
   },
   {
     id: "B",
+    group: 'periodusok', // Hozzárendelés a 'periodusok' csoporthoz
     content: "Modern kor",
     start: new Date(1600, 0, 1),
     end: new Date(),
@@ -23,52 +36,25 @@ var items = new vis.DataSet([
   },
 
   // —————————————————————————————————————————————————————————— KORSZAKOK ——————————————————————————————————————————————————————————
-
   {
     id: "a",
+    group: 'korszakok', // Hozzárendelés a 'korszakok' csoporthoz
     content: "Antikvitás",
     start: new Date(-600, 0, 1),
     end: new Date(476, 0, 1),
     type: "background",
-    className: "negative",
-  },
-  
-  {
-    id: 2,
-    content: "A delphoi jósda befolyásának csúcsa",
-    start: new Date(-580, 0, 1),
-  },
-  {
-    id: 3,
-    content: "II. Nabú-kudurri-uszur elfoglalja Jeruzsálemet",
-    start: new Date(-587, 0, 1),
-  },
-  {
-    id: 4,
-    content: "Thalész napfogyatkozás-jóslata",
-    start: new Date(-585, 5, 28), // i.e. 585. máj. 28.
-  },
-  {
-    id: 5,
-    content: "Az utolsó római király elűzése",
-    start: new Date(-509, 0, 1),
-    type: "point",
+    className: "antikvitas-stilus", // Az új CSS stílus használata
   },
 ]);
 
-// —————————————————————————————————————————————————————————— KONFIGURÁCIÓ ——————————————————————————————————————————————————————————
-
-// ————————————————————————————— Az idővonal kezdő és végpontja
-
+// Konfigurációs opciók
 var options = {
-  
-  start: new Date(-600, 0, 1), // Kezdőpont
-  end: new Date(2040, 0, 1),   // Végpont
-  
-  // További opciók
-  height: '500px',
-  editable: false, // Elemek szerkeszthetősége
+  start: new Date(-700, 0, 1),
+  end: new Date(2100, 0, 1),
+  stack: false, // Fontos: a háttérelemek így nem próbálják egymást elkerülni
+  height: '400px',
 };
 
-// Timeline létrehozása
-var timeline = new vis.Timeline(container, items, options);
+// 3. LÉPÉS: TIMELINE LÉTREHOZÁSA A CSOPORTOKKAL
+// A Timeline konstruktornak átadjuk a groups adathalmazt is.
+var timeline = new vis.Timeline(container, items, groups, options);
