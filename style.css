@@ -1,51 +1,101 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+h1 {
     text-align: center;
+    color: #444;
 }
 
-#timeline {
-    width: 95%;
-    margin: 20px auto;
-    border: 1px solid #aaa;
-    background-color: white;
+/* Ez a külső konténer, ami a görgetést biztosítja kis képernyőn */
+.timeline-wrapper {
+    overflow-x: auto; /* Vízszintes görgetés engedélyezése */
+    padding: 20px 0;
 }
 
-.premodern-bg {
-    background-color: #fef0c6;
+/* Az idővonal konténere, ami a grid elrendezést használja */
+#timeline-container {
+    display: grid;
+    /* Az oszlopok és sorok számát a JS állítja be */
+    grid-template-columns: repeat(var(--total-years), 1fr);
+    grid-template-rows: repeat(var(--total-rows, 4), 50px);
+    gap: 10px 0;
+    width: var(--timeline-width, 3000px); /* A teljes szélesség, hogy ne zsugorodjon */
+    position: relative; /* A segédvonalak pozicionálásához */
+    margin: 40px 0;
 }
 
-.modern-bg {
-    background-color: #d4e8ff;
+/* Az idővonal elemek alap stílusa */
+.timeline-item {
+    grid-row: var(--row); /* A JS állítja be */
+    grid-column: var(--start-col) / var(--end-col); /* A JS állítja be */
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 25px; /* Lekerekített sarkok */
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap; /* Ne törjön több sorba a szöveg */
 }
 
-.vis-item.vis-background .vis-item-content {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #555;
-    font-size: 1.2em;
-    font-weight: bold;
+/* Különböző típusú elemek stílusai */
+.item-era {
+    background-color: #fcefdc;
+    color: #5f5a51;
+    border-radius: 0; /* A háttérsávok ne legyenek lekerekítve */
+    font-size: 18px;
+    justify-content: flex-start;
+    padding-left: 20px;
+    z-index: 1;
 }
 
-/* Stílus a függőleges "mai nap" vonalhoz */
-.vis-custom-time#currentYearLine {
-    border-color: #ff5252;
-    width: 2px;
-    z-index: 10;
+.item-concept {
+    background-color: #ffb92e;
+    color: #333;
+    z-index: 2; /* Legyenek a háttérsávok felett */
 }
 
-/* Stílus az évszám címkéhez */
-.current-year-label.vis-point {
-    border: none;
-    background: none;
-    transform: translate(-50%, -220px);
-    background-color: #ff5252;
+.item-event {
+    background-color: #555;
     color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    align-items: flex-start;
+    padding-top: 5px;
+    z-index: 3;
+}
+
+/* Az időskála stílusai */
+.timeline-axis {
+    grid-row: var(--total-rows); /* Az utolsó sorban helyezkedik el */
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(var(--total-years), 1fr);
+    border-top: 2px solid #ccc;
+    margin-top: 10px;
+}
+
+.axis-label {
+    grid-column: var(--pos); /* A JS állítja be */
+    transform: translateX(-50%); /* Középre igazítás */
+    text-align: center;
     font-size: 14px;
-    white-space: nowrap;
-    z-index: 11;
+    color: #666;
+}
+
+/* Függőleges segédvonalak */
+.grid-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #e0e0e0;
+    z-index: 0;
+    left: var(--pos-percent); /* A JS állítja be százalékban */
 }
