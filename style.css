@@ -1,3 +1,10 @@
 body, html {
   font-family: sans-serif;
+  font-size: 11pt;
+}
+
+/* negativ stílus a háttérperiódushoz */
+.vis-item.vis-background.negative {
+  background-color: rgba(255, 0, 0, 0.2);
+  border-color: rgba(255, 0, 0, 0.6);
 }
