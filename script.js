@@ -15,6 +15,13 @@ const options = {
     end: '2020',
 };
 
+function formatYear(year) {
+  // A Vis.js tökéletesen kezeli az "ÉÉÉÉ-HH-NN" formátumot,
+  // negatív (Kr.e.) és pozitív (Kr.u.) évekre egyaránt.
+  // Az egyszerűség kedvéért minden év január 1-jét használjuk.
+  return `${year}-01-01`;
+}
+
 // 2. Adatok betöltése és feldolgozása a Google Sheets-ből
 Papa.parse(googleSheetURL, {
     download: true,
