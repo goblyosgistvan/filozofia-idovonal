@@ -1,12 +1,42 @@
 body {
-    font-family: sans-serif;
-    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
 #timeline {
-    width: 90%;
-    height: 600px;
+    width: 95%;
     margin: 20px auto;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
     background-color: white;
+}
+
+/* Premodern kor háttérszíne */
+.premodern-bg {
+    background-color: #fef0c6; /* Egy meleg, pergamen-szerű szín */
+    border-color: #e0d0a6;
+}
+
+/* Modern kor háttérszíne */
+.modern-bg {
+    background-color: #d4e8ff; /* Egy hűvösebb, világoskék szín */
+    border-color: #b4c8df;
+}
+
+
+/* --- EZ A LEGFONTOSABB RÉSZ: A FELIRATOK IGAZÍTÁSA --- */
+
+/* Megcélozzuk a háttérelemek belső tartalmát (a szöveget) */
+.vis-item.vis-background .vis-item-content {
+    position: absolute;
+    /* Felülre igazítás */
+    top: 10px; 
+    /* Vízszintesen középre igazítás */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Jobb olvashatóság */
+    color: #555;
+    font-size: 1.2em;
+    font-weight: bold;
 }
