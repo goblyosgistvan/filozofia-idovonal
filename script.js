@@ -1,24 +1,30 @@
-// script.js
+// script.js (Javított verzió a határokkal)
 
 // 1. Megkeressük a HTML elemet, ahova az idővonalat tesszük.
 const container = document.getElementById('timeline');
 
-// 2. Létrehozzuk az "elemeket". Most ez a két háttérsáv lesz.
-// A Vis.js-ben a 'background' típusú elemek pont erre valók.
+// --- ÚJ RÉSZ: Dinamikus végdátum meghatározása ---
+// Lekérjük az aktuális évet (pl. 2024), és hozzáadunk egyet, hogy legyen egy kis mozgástér.
+const endYear = new Date().getFullYear() + 1; 
+
+
+// 2. Létrehozzuk az "elemeket", azaz a két háttérsávot.
+// A dátumokat frissítjük az új határokhoz.
 const items = new vis.DataSet([
     {
         id: 'premodern',
-        content: 'Premodern kor', // Ez lesz a felirat
-        start: '-1000-01-01',     // Kezdődjön jó korán, hogy mindent lefedjen
-        end: '1600-01-01',        // Eddig tart
+        content: 'Premodern kor',
+        // MÓDOSÍTÁS: A start mostantól i.e. 600
+        start: '-0600-01-01', 
+        end: '1600-01-01',
         type: 'background',
-        className: 'premodern-bg' // Ezzel a CSS osztállyal fogjuk megszínezni
+        className: 'premodern-bg'
     },
     {
         id: 'modern',
         content: 'Modern kor',
-        start: '1600-01-01',      // Pontosan ott kezdődik, ahol a másik véget ért
-        end: '2100-01-01',        // Tartsan a jövőig, hogy mindig látszódjon
+        start: '1600-01-01',
+        end: `${endYear}-01-01`, 
         type: 'background',
         className: 'modern-bg'
     }
@@ -26,16 +32,22 @@ const items = new vis.DataSet([
 
 // 3. Beállítások az idővonalhoz (opciók)
 const options = {
-    // Kezdő nézet, ami jól mutatja a 1600-as elválasztást
-    start: '1400-01-01',
-    end: '1800-01-01',
-    
-    // Alapvető beállítások
     height: '400px',
-    stack: false, // Fontos: a háttérelemek ne akarjanak egymás alá rendeződni
-    zoomMin: 1000 * 60 * 60 * 24 * 365 * 10 // Legalább 10 évre lehessen nagyítani
+    stack: false,
+    
+    // --- MÓDOSÍTÁS: A határok beállítása ---
+    // A legkorábbi dátum, amihez görgetni lehet (i.e. 6. század eleje)
+    min: '-0600-01-01',
+    // A legkésőbbi dátum, amihez görgetni lehet
+    max: `${endYear}-01-01`,
+
+    // Kezdeti nézet: alapból mutassa a teljes idővonalat
+    start: '-0600-01-01',
+    end: `${endYear}-01-01`,
+
+    // A minimális nagyítás továbbra is hasznos
+    zoomMin: 1000 * 60 * 60 * 24 * 365 * 10 
 };
 
 // 4. Létrehozzuk az idővonalat a fenti adatokkal és beállításokkal.
-// Figyeld meg, hogy most nincs szükség "groups"-ra.
 const timeline = new vis.Timeline(container, items, options);
