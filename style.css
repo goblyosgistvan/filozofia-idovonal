@@ -1,28 +1,51 @@
-/* style.css (Kiegészítés) */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+#timeline {
+    width: 95%;
+    margin: 20px auto;
+    border: 1px solid #aaa;
+    background-color: white;
+}
+
+.premodern-bg {
+    background-color: #fef0c6;
+}
+
+.modern-bg {
+    background-color: #d4e8ff;
+}
+
+.vis-item.vis-background .vis-item-content {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #555;
+    font-size: 1.2em;
+    font-weight: bold;
+}
 
 /* Stílus a függőleges "mai nap" vonalhoz */
 .vis-custom-time#currentYearLine {
-    border-color: #ff5252; /* Legyen egy élénk piros színű */
-    width: 2px; /* Legyen kicsit vastagabb */
-    z-index: 10; /* Biztosan minden más felett jelenjen meg */
+    border-color: #ff5252;
+    width: 2px;
+    z-index: 10;
 }
 
 /* Stílus az évszám címkéhez */
 .current-year-label.vis-point {
-    /* Alapértelmezett doboz és pont eltüntetése */
     border: none;
     background: none;
-    
-    /* Pozicionálás: a tengely fölé, középre igazítva */
-    /* A 'transform' trükkel toljuk el, hogy a közepe legyen a vonal felett */
-    transform: translate(-50%, -220px); 
-    
-    /* Kinézet */
-    background-color: #ff5252; /* Ugyanaz a piros szín, mint a vonalnál */
+    transform: translate(-50%, -220px);
+    background-color: #ff5252;
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
-    white-space: nowrap; /* Ne törjön több sorba a szöveg */
-    z-index: 11; /* Legyen a legtetején, még a vonal felett is */
+    white-space: nowrap;
+    z-index: 11;
 }
