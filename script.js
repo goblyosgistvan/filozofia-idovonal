@@ -1,20 +1,22 @@
-// script.js (Javított verzió a határokkal)
+// script.js (Kiegészített verzió)
 
-// 1. Megkeressük a HTML elemet, ahova az idővonalat tesszük.
+// 1. Megkeressük a HTML elemet
 const container = document.getElementById('timeline');
 
-// --- ÚJ RÉSZ: Dinamikus végdátum meghatározása ---
-// Lekérjük az aktuális évet (pl. 2024), és hozzáadunk egyet, hogy legyen egy kis mozgástér.
-const endYear = new Date().getFullYear() + 1; 
+// --- ÚJ RÉSZ: Jelenlegi dátum és év változók ---
+const now = new Date();
+const currentYear = now.getFullYear();
+// Formázzuk a mai napot 'ÉÉÉÉ-HH-NN' formátumra a vonalhoz
+const currentDate = `${currentYear}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+// A timeline felső határa legyen a jelenlegi év + 5, hogy legyen hely a jelölőnek
+const endYear = currentYear + 5;
 
-
-// 2. Létrehozzuk az "elemeket", azaz a két háttérsávot.
-// A dátumokat frissítjük az új határokhoz.
+// 2. Létrehozzuk az "elemeket"
 const items = new vis.DataSet([
+    // A háttérsávok maradnak
     {
         id: 'premodern',
         content: 'Premodern kor',
-        // MÓDOSÍTÁS: A start mostantól i.e. 600
         start: '-0600-01-01', 
         end: '1600-01-01',
         type: 'background',
@@ -27,27 +29,33 @@ const items = new vis.DataSet([
         end: `${endYear}-01-01`, 
         type: 'background',
         className: 'modern-bg'
+    },
+    
+    // --- ÚJ ELEM: Az évszám címke ---
+    // Ez egy 'point' típusú elem, ami egyetlen időponthoz kötődik.
+    {
+        id: 'currentYearLabel',
+        content: `<strong>${currentYear}</strong>`, // A jelenlegi év, félkövéren
+        start: currentDate, // Pontosan a mai naphoz igazítjuk
+        type: 'point',
+        className: 'current-year-label' // Saját CSS osztály a formázáshoz
     }
 ]);
 
-// 3. Beállítások az idővonalhoz (opciók)
+// 3. Beállítások az idővonalhoz
 const options = {
     height: '400px',
     stack: false,
-    
-    // --- MÓDOSÍTÁS: A határok beállítása ---
-    // A legkorábbi dátum, amihez görgetni lehet (i.e. 6. század eleje)
     min: '-0600-01-01',
-    // A legkésőbbi dátum, amihez görgetni lehet
     max: `${endYear}-01-01`,
-
-    // Kezdeti nézet: alapból mutassa a teljes idővonalat
     start: '-0600-01-01',
     end: `${endYear}-01-01`,
-
-    // A minimális nagyítás továbbra is hasznos
-    zoomMin: 1000 * 60 * 60 * 24 * 365 * 10 
+    zoomMin: 1000 * 60 * 60 * 24 * 365 * 10
 };
 
-// 4. Létrehozzuk az idővonalat a fenti adatokkal és beállításokkal.
-const timeline = new vis.Timeline(container, items, options);
+// 4. Létrehozzuk az idővonalat
+const timeline = new vis.Timeline(container, items, null, options);
+
+// --- ÚJ RÉSZ: Függőleges vonal hozzáadása ---
+// A timeline létrehozása UTÁN adjuk hozzá a 'custom time' vonalat.
+timeline.addCustomTime(now, 'currentYearLine');
