@@ -1,39 +1,68 @@
-// 1. Az adatok (a JSON-ból vagy közvetlenül ide írva)
+// script.js
 
-// Korszakok mint csoportok a Vis.js számára
-const groups = new vis.DataSet([
-  {id: 1, content: 'Ókori görög'},
-  {id: 2, content: 'Felvilágosodás'},
-  {id: 3, content: 'Egzisztencializmus'}
-]);
+// 1. A Google Sheets publikált CSV linkje
+const googleSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSmNXKlWO1jsEytxJBiAFE0x3sU3sS98MJEbcMpR6JxZH38aCEpfnQ3CvZivwHALAnCHoXNdquW-W77/pub?output=csv';
 
-// Filozófusok mint elemek az idővonalon
-const items = new vis.DataSet([
-  // Az 'id' egyedi azonosító, 'content' a megjelenő név.
-  // A 'start' a születés, az 'end' a halál dátuma.
-  // A 'group' köti a filozófust a korszakhoz.
-  // A 'type: range' jelzi, hogy egy időtartamot jelenítünk meg.
-  {id: 1, content: 'Szókratész', start: '-0470', end: '-0399', group: 1, type: 'range'},
-  {id: 2, content: 'Platón', start: '-0428', end: '-0348', group: 1, type: 'range'},
-  {id: 3, content: 'Arisztotelész', start: '-0384', end: '-0322', group: 1, type: 'range'},
-  
-  {id: 4, content: 'Immanuel Kant', start: '1724-04-22', end: '1804-02-12', group: 2, type: 'range'},
-  {id: 5, content: 'Voltaire', start: '1694-11-21', end: '1778-05-30', group: 2, type: 'range'},
-  
-  {id: 6, content: 'Søren Kierkegaard', start: '1813-05-05', end: '1855-11-11', group: 3, type: 'range'},
-  {id: 7, content: 'Jean-Paul Sartre', start: '1905-06-21', end: '1980-04-15', group: 3, type: 'range'}
-]);
-
-// 2. Az idővonal beállításai
+// Az idővonal megjelenítésére szolgáló konténer
 const container = document.getElementById('timeline');
+
+// Az idővonal beállításai
 const options = {
-  // Nagyítható, mozgatható
-  zoomable: true,
-  zoomMin: 1000 * 60 * 60 * 24 * 365 * 5, // Minimum 5 évre lehessen nagyítani
-  // Kezdő nézet
-  start: '-0500',
-  end: '2020',
+    zoomable: true,
+    zoomMin: 1000 * 60 * 60 * 24 * 365 * 5, // Minimum 5 év
+    stack: true, // Elemek ne fedjék egymást
+    start: '-0500',
+    end: '2020',
 };
 
-// 3. Az idővonal létrehozása
-const timeline = new vis.Timeline(container, items, groups, options);
+// 2. Adatok betöltése és feldolgozása a Google Sheets-ből
+Papa.parse(googleSheetURL, {
+    download: true,
+    header: true, // Fontos! Ez mondja meg, hogy az első sor a fejléc
+    dynamicTyping: true, // Automatikusan számmá alakítja a számokat
+    complete: function(results) {
+        // A 'results.data' tartalmazza a sorokat objektumokként
+        const adatok = results.data;
+        
+        // Üres tömbök a Vis.js számára
+        let items = [];
+        let groups = [];
+        let groupMap = new Map(); // Segítségével elkerüljük a duplikált korszakokat
+
+        // 3. Adatok átalakítása a Vis.js formátumára
+        adatok.forEach((sor, index) => {
+            if (sor.nev && sor.szuletett !== null && sor.meghalt !== null) {
+                // Filozófusok hozzáadása az 'items'-hez
+                items.push({
+                    id: index + 1,
+                    content: sor.nev,
+                    start: sor.szuletett.toString(), // Dátumként string kell
+                    end: sor.meghalt.toString(),
+                    group: sor.korszak_id,
+                    type: 'range'
+                });
+
+                // Korszakok (csoportok) gyűjtése, duplikáció nélkül
+                if (!groupMap.has(sor.korszak_id)) {
+                    groupMap.set(sor.korszak_id, sor.korszak_nev);
+                    groups.push({
+                        id: sor.korszak_id,
+                        content: sor.korszak_nev
+                    });
+                }
+            }
+        });
+
+        // 4. Az idővonal létrehozása a betöltött adatokkal
+        const timeline = new vis.Timeline(
+            container, 
+            new vis.DataSet(items), 
+            new vis.DataSet(groups), 
+            options
+        );
+    },
+    error: function(error) {
+        console.error("Hiba a CSV betöltése közben:", error);
+        container.innerHTML = "Hiba történt az adatok betöltése közben. Ellenőrizd a Google Sheets linket!";
+    }
+});
